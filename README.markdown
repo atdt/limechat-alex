@@ -1,8 +1,3 @@
-GrayZone
-========
-
-Originally forked from someone, I forget who. It's plain, it's bland, it's readable. I love it.
-
 To Install
 ==========
 
