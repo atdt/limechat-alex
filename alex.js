@@ -4,7 +4,7 @@ var window = this;
 
 function require( src, callback ) {
     var s = document.createElement( 'script' );
-    s.src = src + '?' + Date.now();
+    s.src = src + '?' + Date.now();  // cache bust
     if ( callback ) {
         s.onload = callback;
     }
@@ -31,23 +31,17 @@ require( 'lib/jquery-2.0.0.js', function () {
         document.body.appendChild( node );
     }
 
-    $( document ).on( 'DOMNodeInserted', function ( e ) {
-        var el = e.target, $el = $( el );
+    var canonicalTypes = {
+        privmsg : 'message',
+        reply   : 'status'
+    }
 
-        if ( $el.parent().is( 'body' ) && $el.is( '.line' ) ) {
-            lime.trigger( $el.attr( 'type' ), [ el ] );
-
-            if ( $el.attr( 'highlight' ) ) {
-                lime.trigger( 'highlight', [ el ] );
-            }
-
-            $( 'a', el ).each( function () {
-                lime.trigger( 'link', [ this, el ] );
-            } );
-
-            $el.children().each( function () {
-                lime.trigger( this.className, [ this, el ] );
-            } );
+    $( document ).on( 'DOMNodeInserted', function ( event ) {
+        var $el = $( event.target ), type = $el.attr( 'type' );
+        if ( type ) {
+            event.type = canonicalTypes[ type ] || type;
+            event.nick = $el.attr( 'nick' );
+            lime.trigger( event, $el.children() );
         }
     } );
 
