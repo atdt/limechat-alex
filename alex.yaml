@@ -1,0 +1,54 @@
+# All colors must be in the form of '#rrggbb' or '#rgb'.
+# You cannot use color names.
+
+log-view:
+  nickname-format: '<%n> '
+  scroller-highlight-color: '#a33'
+input-text:
+  font-family: 'Helvetica Neue Light'
+  font-size: 14.0
+  background-color: '#eee'
+  color: '#2d2d2d'
+member-list:
+  font-family: 'Helvetica Neue Light'
+  font-size: 14.0
+  line-height: '1.4em'
+  color: '#999'
+  background-color: '#2d2d2d'
+  operator:
+    color: '#ccc'
+  selected:
+    color: '#eee'
+    background:
+      top-line-color: '#2d2d2d'
+      bottom-line-color: '#2d2d2d'
+      top-color: '#2d2d2d'
+      bottom-color: '#2d2d2d'
+server-tree:
+  font-family: 'Helvetica Neue Light'
+  font-size: 14.0
+  line-height: '1.4em'
+  background-color: '#2d2d2d'
+  highlight:
+    color: '#f00'
+    background-color: '#eea'
+  newtalk:
+    color: '#f00'
+  unread:
+    color: '#f00'
+    font-weight: 'bold'
+  normal:
+    active:
+      color: '#bbb'
+    inactive:
+      color: '#666'
+  selected:
+    active:
+      color: '#fff'
+    inactive:
+      color: '#aaa'
+    background:
+      top-line-color: '#000'
+      bottom-line-color: '#000'
+      top-color: '#000'
+      bottom-color: '#000'
