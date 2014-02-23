@@ -20,26 +20,27 @@ require( 'lib/jquery-2.0.0.js', function () {
         error : log.bind( null, 'js-console-error' )
     };
 
-    window.onerror = console.error;
+    // window.onerror = console.error;
 
-    function log( className ) {
-        var message = $.makeArray( arguments ).slice( 1 ).join( ' ' );
-        var node = document.createElement( 'div' );
+    function log( className, error ) {
+        var message, node;
+
+        if ( error && error.message ) {
+            message = error.message;
+        } else {
+            message = $.makeArray( arguments ).slice( 1 ).join( ' ' );
+        }
+        node = document.createElement( 'div' );
 
         node.className = className;
         node.innerHTML = '<span class="message">' + message + '</span>';
         document.body.appendChild( node );
     }
 
-    var canonicalTypes = {
-        privmsg : 'message',
-        reply   : 'status'
-    }
-
     $( document ).on( 'DOMNodeInserted', function ( event ) {
         var $el = $( event.target ), type = $el.attr( 'type' );
         if ( type ) {
-            event.type = canonicalTypes[ type ] || type;
+            event.type = { privmsg: 'message', reply: 'status' }[ type ] || type;
             event.nick = $el.attr( 'nick' );
             lime.trigger( event, $el.children() );
         }
