@@ -4,20 +4,17 @@ function pad( value ) {
     return ( value < 10 ? '0' : '' ) + value;
 }
 
-var offset = (function () {
-    var os = new Date().getTimezoneOffset();
-    var sign = os > 0 ? -1 : 1;
+var offset = ( function () {
+    var tzo = new Date().getTimezoneOffset(),
+        sign = tzo > 0 ? -1 : 1,
+        minutes = Math.abs( tzo ) % 60,
+        hours = ( Math.abs( tzo ) - minutes ) / 60;
 
-    return {
-        hours   : Math.floor(Math.abs(os) / 60) * sign,
-        minutes : (Math.abs(os) % 60) * sign
-    };
-} ());
+    return { hours: hours * sign, minutes: minutes * sign };
+}());
 
 lime.on( 'message', function ( e, time, sender, message ) {
-    // Linkify 'bug XXXX'
     $( message ).html( function ( _, html ) {
-        html = html.replace( /bug (\d+)/, '<a href="https://bugzilla.wikimedia.org/show_bug.cgi?id=$1">bug $1</a>' );
         html = html.replace( /^\[(\d\d):(\d\d):\d\d\] /, function ( _, hh, mm ) {
             hh = parseInt( hh ) + offset.hours;
             mm = parseInt( mm ) + offset.minutes;
@@ -44,9 +41,25 @@ lime.on( 'message', function ( e, time, sender, message ) {
 
     // Beautify Gerrit links
     $( 'a', message ).each( function () {
-        var match = /gerrit.wikimedia.org\/.*\/c\/(\d+)\/?$/.exec( this.href );
-        if ( match ) {
-            this.innerText = 'change ' + match.pop();
+        var m;
+        m = /gerrit.wikimedia.org\/.*\/(\d{3,})/.exec( this.href );
+        if ( m ) {
+            this.innerText = 'G' + m.pop();
+        }
+        m = /phabricator.wikimedia.org\/(T\d+)/.exec ( this.href );
+        if ( m ) {
+            this.innerText = m.pop();
         }
     } );
+
+    $( message ).html( function ( _, html ) {
+        return html.replace( '\bT\d+', '<a href="//phabricator.wikimedia.org/$1">$1</a>' );
+    } );
+
+} );
+
+lime.on( 'system', function ( e, time, message ) {
+    if ( /You have joined the channel/.test( message.innerText ) ) {
+        $( message ).parent().remove();
+    }
 } );
